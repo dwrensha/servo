@@ -54,11 +54,11 @@ impl FontContext {
 
         // TODO: Allow users to specify these.
         let mut generic_fonts = HashMap::with_capacity(5);
-        generic_fonts.insert("serif".to_owned(), "Times New Roman".to_owned());
-        generic_fonts.insert("sans-serif".to_owned(), "Arial".to_owned());
-        generic_fonts.insert("cursive".to_owned(), "Apple Chancery".to_owned());
-        generic_fonts.insert("fantasy".to_owned(), "Papyrus".to_owned());
-        generic_fonts.insert("monospace".to_owned(), "Menlo".to_owned());
+        generic_fonts.insert("serif".to_string(), "Times New Roman".to_string());
+        generic_fonts.insert("sans-serif".to_string(), "Arial".to_string());
+        generic_fonts.insert("cursive".to_string(), "Apple Chancery".to_string());
+        generic_fonts.insert("fantasy".to_string(), "Papyrus".to_string());
+        generic_fonts.insert("monospace".to_string(), "Menlo".to_string());
 
         FontContext {
             instance_cache: LRUCache::new(10),
@@ -110,7 +110,7 @@ impl FontContext {
     fn transform_family(&self, family: &String) -> String {
         debug!("(transform family) searching for `{:s}`", family.as_slice());
         match self.generic_fonts.find(family) {
-            None => family.to_owned(),
+            None => family.to_string(),
             Some(mapped_family) => (*mapped_family).clone()
         }
     }

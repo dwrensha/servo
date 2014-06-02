@@ -10,6 +10,7 @@ use num::div_rem;
 use sync::Arc;
 
 use servo_util::namespace;
+use servo_util::smallvec::VecLike;
 use servo_util::sort;
 use servo_util::str::DOMString;
 
@@ -104,17 +105,18 @@ impl SelectorMap {
     /// Extract matching rules as per node's ID, classes, tag name, etc..
     /// Sort the Rules at the end to maintain cascading order.
     fn get_all_matching_rules<E:TElement,
-                              N:TNode<E>>(
+                              N:TNode<E>,
+                              V:VecLike<MatchedProperty>>(
                               &self,
                               node: &N,
-                              matching_rules_list: &mut Vec<MatchedProperty>,
+                              matching_rules_list: &mut V,
                               shareable: &mut bool) {
         if self.empty {
             return
         }
 
         // At the end, we're going to sort the rules that we added, so remember where we began.
-        let init_len = matching_rules_list.len();
+        let init_len = matching_rules_list.vec_len();
         let element = node.as_element();
         match element.get_attr(&namespace::Null, "id") {
             Some(id) => {
@@ -154,15 +156,16 @@ impl SelectorMap {
                                         shareable);
 
         // Sort only the rules we just added.
-        sort::quicksort(matching_rules_list.mut_slice_from(init_len));
+        sort::quicksort(matching_rules_list.vec_mut_slice_from(init_len));
     }
 
     fn get_matching_rules_from_hash<E:TElement,
-                                    N:TNode<E>>(
+                                    N:TNode<E>,
+                                    V:VecLike<MatchedProperty>>(
                                     node: &N,
                                     hash: &HashMap<DOMString, Vec<Rule>>,
                                     key: &str,
-                                    matching_rules: &mut Vec<MatchedProperty>,
+                                    matching_rules: &mut V,
                                     shareable: &mut bool) {
         match hash.find_equiv(&key) {
             Some(rules) => {
@@ -173,11 +176,12 @@ impl SelectorMap {
     }
 
     fn get_matching_rules_from_hash_ignoring_case<E:TElement,
-                                                  N:TNode<E>>(
+                                                  N:TNode<E>,
+                                                  V:VecLike<MatchedProperty>>(
                                                   node: &N,
                                                   hash: &HashMap<DOMString, Vec<Rule>>,
                                                   key: &str,
-                                                  matching_rules: &mut Vec<MatchedProperty>,
+                                                  matching_rules: &mut V,
                                                   shareable: &mut bool) {
         match hash.find_equiv(&LowercaseAsciiString(key)) {
             Some(rules) => {
@@ -189,15 +193,16 @@ impl SelectorMap {
 
     /// Adds rules in `rules` that match `node` to the `matching_rules` list.
     fn get_matching_rules<E:TElement,
-                          N:TNode<E>>(
+                          N:TNode<E>,
+                          V:VecLike<MatchedProperty>>(
                           node: &N,
                           rules: &[Rule],
-                          matching_rules: &mut Vec<MatchedProperty>,
+                          matching_rules: &mut V,
                           shareable: &mut bool) {
         for rule in rules.iter() {
             if matches_compound_selector(&*rule.selector, node, shareable) {
                 // TODO(pradeep): Is the cloning inefficient?
-                matching_rules.push(rule.property.clone());
+                matching_rules.vec_push(rule.property.clone());
             }
         }
     }
@@ -375,12 +380,13 @@ impl Stylist {
     /// matched selectors are simple enough to allow the matching logic to be reduced to the logic
     /// in `css::matching::PrivateMatchMethods::candidate_element_allows_for_style_sharing`.
     pub fn push_applicable_declarations<E:TElement,
-                                        N:TNode<E>>(
+                                        N:TNode<E>,
+                                        V:VecLike<MatchedProperty>>(
                                         &self,
                                         element: &N,
                                         style_attribute: Option<&PropertyDeclarationBlock>,
                                         pseudo_element: Option<PseudoElement>,
-                                        applicable_declarations: &mut Vec<MatchedProperty>)
+                                        applicable_declarations: &mut V)
                                         -> bool {
         assert!(element.is_element());
         assert!(style_attribute.is_none() || pseudo_element.is_none(),
@@ -404,7 +410,7 @@ impl Stylist {
         // Step 2: Normal style attributes.
         style_attribute.map(|sa| {
             shareable = false;
-            applicable_declarations.push(MatchedProperty::from_declarations(sa.normal.clone()))
+            applicable_declarations.vec_push(MatchedProperty::from_declarations(sa.normal.clone()))
         });
 
         // Step 3: Author-supplied `!important` rules.
@@ -415,7 +421,7 @@ impl Stylist {
         // Step 4: `!important` style attributes.
         style_attribute.map(|sa| {
             shareable = false;
-            applicable_declarations.push(MatchedProperty::from_declarations(sa.important.clone()))
+            applicable_declarations.vec_push(MatchedProperty::from_declarations(sa.important.clone()))
         });
 
         // Step 5: User and UA `!important` rules.

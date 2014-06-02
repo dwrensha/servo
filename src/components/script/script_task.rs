@@ -238,9 +238,6 @@ impl Page {
                 .enumerate()
                 .find(|&(_idx, ref page_tree)| {
                     // FIXME: page_tree has a lifetime such that it's unusable for anything.
-                    // let page_tree: &Rc<Page> = unsafe {
-                    //     mem::transmute(page_tree)
-                    // };
                     let page_tree_id = page_tree.id;
                     page_tree_id == id
                 })

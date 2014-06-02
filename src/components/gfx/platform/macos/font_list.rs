@@ -59,6 +59,6 @@ impl FontListHandle {
     }
 
     pub fn get_last_resort_font_families() -> Vec<String> {
-        vec!("Arial Unicode MS".to_owned(), "Arial".to_owned())
+        vec!("Arial Unicode MS".to_string(), "Arial".to_string())
     }
 }

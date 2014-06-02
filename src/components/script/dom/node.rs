@@ -39,9 +39,9 @@ use js::jsapi::{JSContext, JSObject, JSRuntime};
 use js::jsfriendapi;
 use libc;
 use libc::uintptr_t;
-use std::mem;
 use std::cell::{RefCell, Ref, RefMut};
 use std::iter::{Map, Filter};
+use std::mem;
 use style::ComputedValues;
 use sync::Arc;
 

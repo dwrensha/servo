@@ -14,6 +14,7 @@ use layout::wrapper::{LayoutElement, LayoutNode, PostorderNodeMutTraversal, Thre
 use gfx::font_context::FontContext;
 use servo_util::cache::{Cache, LRUCache, SimpleHashCache};
 use servo_util::namespace::Null;
+use servo_util::smallvec::{SmallVec, SmallVec16};
 use servo_util::str::DOMString;
 use std::mem;
 use std::hash::{Hash, sip};
@@ -22,7 +23,7 @@ use style::{After, Before, ComputedValues, MatchedProperty, Stylist, TElement, T
 use sync::Arc;
 
 pub struct ApplicableDeclarations {
-    pub normal: Vec<MatchedProperty>,
+    pub normal: SmallVec16<MatchedProperty>,
     pub before: Vec<MatchedProperty>,
     pub after: Vec<MatchedProperty>,
 
@@ -33,7 +34,7 @@ pub struct ApplicableDeclarations {
 impl ApplicableDeclarations {
     pub fn new() -> ApplicableDeclarations {
         ApplicableDeclarations {
-            normal: Vec::new(),
+            normal: SmallVec16::new(),
             before: Vec::new(),
             after: Vec::new(),
             normal_shareable: false,
@@ -41,7 +42,7 @@ impl ApplicableDeclarations {
     }
 
     pub fn clear(&mut self) {
-        self.normal = Vec::new();
+        self.normal = SmallVec16::new();
         self.before = Vec::new();
         self.after = Vec::new();
         self.normal_shareable = false;

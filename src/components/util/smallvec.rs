@@ -16,6 +16,32 @@ use alloc::heap;
 
 // Generic code for all small vectors
 
+pub trait VecLike<T> {
+    fn vec_len(&self) -> uint;
+    fn vec_push(&mut self, value: T);
+
+    fn vec_mut_slice<'a>(&'a mut self, start: uint, end: uint) -> &'a mut [T];
+
+    fn vec_mut_slice_from<'a>(&'a mut self, start: uint) -> &'a mut [T] {
+        let len = self.vec_len();
+        self.vec_mut_slice(start, len)
+    }
+}
+
+impl<T> VecLike<T> for Vec<T> {
+    fn vec_len(&self) -> uint {
+        self.len()
+    }
+
+    fn vec_push(&mut self, value: T) {
+        self.push(value);
+    }
+
+    fn vec_mut_slice<'a>(&'a mut self, start: uint, end: uint) -> &'a mut [T] {
+        self.mut_slice(start, end)
+    }
+}
+
 trait SmallVecPrivate<T> {
     unsafe fn set_len(&mut self, new_len: uint);
     unsafe fn set_cap(&mut self, new_cap: uint);
@@ -354,6 +380,20 @@ macro_rules! def_small_vector(
             }
             fn cap(&self) -> uint {
                 self.cap
+            }
+        }
+
+        impl<T> VecLike<T> for $name<T> {
+            fn vec_len(&self) -> uint {
+                self.len()
+            }
+
+            fn vec_push(&mut self, value: T) {
+                self.push(value);
+            }
+
+            fn vec_mut_slice<'a>(&'a mut self, start: uint, end: uint) -> &'a mut [T] {
+                self.mut_slice(start, end)
             }
         }
 
