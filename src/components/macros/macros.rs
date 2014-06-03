@@ -66,7 +66,7 @@ mod tests {
     lazy_init! {
         static ref NUMBER: uint = times_two(3);
         static ref VEC: [Box<uint>, ..3] = [box 1, box 2, box 3];
-        static ref OWNED_STRING: ~str = "hello".to_owned();
+        static ref OWNED_STRING: String = "hello".to_owned();
         static ref HASHMAP: collections::HashMap<uint, &'static str> = {
             let mut m = collections::HashMap::new();
             m.insert(0u, "abc");

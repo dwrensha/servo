@@ -69,8 +69,8 @@ fn load(load_data: LoadData, start_chan: Sender<LoadResponse>) {
 
 #[cfg(test)]
 fn assert_parse(url:          &'static str,
-                content_type: Option<(~str, ~str)>,
-                charset:      Option<~str>,
+                content_type: Option<(String, String)>,
+                charset:      Option<String>,
                 data:         Option<Vec<u8>>) {
     use std::from_str::FromStr;
     use std::comm;
