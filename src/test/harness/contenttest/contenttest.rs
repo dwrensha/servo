@@ -96,7 +96,7 @@ fn run_test(file: String) {
     let stderr = InheritFd(2);
 
     let mut prc = match Command::new("./servo")
-        .args(["-z".to_string(), "-f".to_string(), infile.clone()])
+        .args(["-z", "-f", infile.as_slice()])
         .stdin(Ignored)
         .stdout(stdout)
         .stderr(stderr)
