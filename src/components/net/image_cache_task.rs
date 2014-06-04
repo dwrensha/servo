@@ -537,7 +537,7 @@ mod tests {
     impl Closure for SendTestImageErr {
         fn invoke(&self, response: Sender<resource_task::ProgressMsg>) {
             response.send(resource_task::Payload(test_image_bin()));
-            response.send(resource_task::Done(Err("".to_owned())));
+            response.send(resource_task::Done(Err("".to_string())));
         }
     }
 
@@ -563,7 +563,7 @@ mod tests {
             // the image
             self.wait_port.recv();
             response.send(resource_task::Payload(test_image_bin()));
-            response.send(resource_task::Done(Err("".to_owned())));
+            response.send(resource_task::Done(Err("".to_string())));
         }
     }
 
@@ -771,7 +771,7 @@ mod tests {
                     resource_task::Load(_, response) => {
                         let chan = start_sending(response, Metadata::default(parse_url("file:///fake", None)));
                         chan.send(resource_task::Payload(test_image_bin()));
-                        chan.send(resource_task::Done(Err("".to_owned())));
+                        chan.send(resource_task::Done(Err("".to_string())));
                         image_bin_sent_chan.send(());
                     }
                     resource_task::Exit => {

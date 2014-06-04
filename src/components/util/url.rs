@@ -162,7 +162,7 @@ mod parse_url_tests {
         assert!("http" == new_url.scheme.as_slice());
         assert!("example.com" == new_url.host.as_slice());
         assert!("/index.html" == new_url.path.as_slice());
-        assert!(new_url.fragment == Some("top".to_owned()));
+        assert!(new_url.fragment == Some("top".to_string()));
     }
 
     #[test]
@@ -175,11 +175,11 @@ mod parse_url_tests {
         let new_url = parse_url(new_str, Some(old_url));
 
         assert!("http" == new_url.scheme.as_slice());
-        assert!(new_url.user == Some(UserInfo { user: "foo".to_owned(), pass: Some("bar".to_owned()) }));
+        assert!(new_url.user == Some(UserInfo { user: "foo".to_string(), pass: Some("bar".to_string()) }));
         assert!("example.com" == new_url.host.as_slice());
-        assert!(new_url.port == Some("8080".to_owned()));
+        assert!(new_url.port == Some("8080".to_string()));
         assert!("/index.html" == new_url.path.as_slice());
-        assert!(new_url.fragment == Some("top".to_owned()));
+        assert!(new_url.fragment == Some("top".to_string()));
     }
 
     #[test]

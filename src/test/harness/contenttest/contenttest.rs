@@ -91,12 +91,12 @@ fn make_test(file: String) -> TestDescAndFn {
 fn run_test(file: String) {
     let path = os::make_absolute(&Path::new(file));
     // FIXME (#1094): not the right way to transform a path
-    let infile = "file://".to_owned().append(path.display().to_str().as_slice());
+    let infile = "file://".to_string().append(path.display().to_str().as_slice());
     let stdout = CreatePipe(false, true);
     let stderr = InheritFd(2);
 
     let mut prc = match Command::new("./servo")
-        .args(["-z".to_owned(), "-f".to_owned(), infile.clone()])
+        .args(["-z".to_string(), "-f".to_string(), infile.clone()])
         .stdin(Ignored)
         .stdout(stdout)
         .stderr(stderr)
@@ -121,7 +121,7 @@ fn run_test(file: String) {
     let lines: Vec<&str> = out.unwrap().split('\n').collect();
     for &line in lines.iter() {
         if line.contains("TEST-UNEXPECTED-FAIL") {
-            fail!(line.to_owned());
+            fail!(line.to_string());
         }
     }
 
